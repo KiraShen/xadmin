@@ -18,12 +18,13 @@
       <script src="https://cdn.staticfile.org/html5shiv/r29/html5.min.js"></script>
       <script src="https://cdn.staticfile.org/respond.js/1.4.2/respond.min.js"></script>
     <![endif]-->
+    <script src="https://cloud.minapp.com/custom-userdash/auth/bbc5579a30dcf285fdcc/"></script>
   </head>
   
   <body>
     <div class="x-body">
         <form class="layui-form">
-          <div class="layui-form-item">
+<!--           <div class="layui-form-item">
               <label for="L_email" class="layui-form-label">
                   <span class="x-red">*</span>邮箱
               </label>
@@ -34,17 +35,17 @@
               <div class="layui-form-mid layui-word-aux">
                   <span class="x-red">*</span>将会成为您唯一的登入名
               </div>
-          </div>
+          </div> -->
           <div class="layui-form-item">
               <label for="L_username" class="layui-form-label">
                   <span class="x-red">*</span>昵称
               </label>
               <div class="layui-input-inline">
-                  <input type="text" id="L_username" name="username" required="" lay-verify="nikename"
+                  <input type="text" id="L_username" name="country" required="" lay-verify="nikename"
                   autocomplete="off" class="layui-input">
               </div>
           </div>
-          <div class="layui-form-item">
+<!--           <div class="layui-form-item">
               <label for="L_pass" class="layui-form-label">
                   <span class="x-red">*</span>密码
               </label>
@@ -64,7 +65,7 @@
                   <input type="password" id="L_repass" name="repass" required="" lay-verify="repass"
                   autocomplete="off" class="layui-input">
               </div>
-          </div>
+          </div> -->
           <div class="layui-form-item">
               <label for="L_repass" class="layui-form-label">
               </label>
@@ -74,7 +75,32 @@
           </div>
       </form>
     </div>
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+    <script src="https://cdn.bootcss.com/jquery/3.2.1/jquery.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+    <script src="https://cdn.bootcss.com/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+    <script src="https://cdn.bootcss.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+
     <script>
+
+        // 配置对象
+    var config = {
+      clientId: 'bbc5579a30dcf285fdcc', // 应用 ClientID，可在管理后台设置模块找到
+      tableId: '34562', // 数据表 ID
+    }
+
+    var client = axios.create({
+      baseURL: 'https://cloud.minapp.com/userve/v1/',// user dash api 的请求地址
+      withCredentials: true // 必须手动开启为 true，允许跨域请求发送身份凭证信息
+    })
+
+    var addRecord = function (data) {
+      console.log('do string:')
+      data=data.field
+      console.log(data)
+      return client.post(`table/${config.tableId}/record/`, data)
+    }
+
+
         layui.use(['form','layer'], function(){
             $ = layui.jquery;
           var form = layui.form
@@ -83,7 +109,7 @@
           //自定义验证规则
           form.verify({
             nikename: function(value){
-              if(value.length < 5){
+              if(value.length < 1){
                 return '昵称至少得5个字符啊';
               }
             }
@@ -99,17 +125,33 @@
           form.on('submit(add)', function(data){
             console.log(data);
             //发异步，把数据提交给php
+                addRecord(data).then(function(res) {
+                  if (res.status === 201 ) {
+                    console.log('success')
+                    //getRecords()
+                    //$('#editModal').modal('hide')
+                  } else {
+                    throw Error(res)
+                  }
+                }).catch(function(err) {
+                  console.log(err)
+                })
+            // window.history.back(-1);
             layer.alert("增加成功", {icon: 6},function () {
                 // 获得frame索引
                 var index = parent.layer.getFrameIndex(window.name);
                 //关闭当前frame
                 parent.layer.close(index);
+
             });
             return false;
           });
           
           
         });
+
+
+
     </script>
     <script>var _hmt = _hmt || []; (function() {
         var hm = document.createElement("script");
