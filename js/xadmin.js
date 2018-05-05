@@ -162,6 +162,40 @@ function x_admin_show(title,url,w,h){
     });
 }
 
+function x_admin_edit(title,data,url,w,h) {
+    // body...
+    console.log("edit:")
+    console.log(data);
+    if(data == null || data == ''){
+        alert("error");
+        url="404.html";
+        w=($(window).width()*0.9);
+        h=($(window).height() - 50);
+    }
+
+        layer.open({
+        type: 2,
+        area: [w+'px', h +'px'],
+        fix: false, //不固定
+        maxmin: true,
+        shadeClose: true,
+        shade:0.4,
+        title: title,
+        content: url ,
+        success:function (layero, index) {
+            var body = layer.getChildFrame('.layui-form', index);
+            //var iframeWin = window[layero.find('iframe')[0]['name']]; //得到iframe页的窗口对象，执行iframe页的方法：iframeWin.method();
+            //console.log(body.html()) //得到iframe页的body内容
+            body.find('#id').val(data);
+            // body.find('#company').val(data.company);
+            // body.find('#code').val(data.code);
+            // body.find('#name').val(data.name);
+            // body.find('#address').val(data.address);
+           
+        }
+        });
+}
+
 /*关闭弹出框口*/
 function x_admin_close(){
     var index = parent.layer.getFrameIndex(window.name);

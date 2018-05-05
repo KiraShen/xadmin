@@ -36,12 +36,21 @@
                   <span class="x-red">*</span>将会成为您唯一的登入名
               </div>
           </div> -->
+          <div class="layui-form-item" style="display: none;" >
+              <label for="company" class="layui-form-label">
+                  <span class="x-red">*</span>ID
+              </label>
+              <div class="layui-input-inline">
+                  <input type="text" id="id" name="id" required="" value="" lay-verify="id"
+                  autocomplete="off" class="layui-input">
+              </div>
+          </div>
           <div class="layui-form-item">
               <label for="company" class="layui-form-label">
                   <span class="x-red">*</span>公司名称
               </label>
               <div class="layui-input-inline">
-                  <input type="text" id="company" name="company" required="" lay-verify="company"
+                  <input type="text" id="company" name="company" required="" value="" lay-verify="company"
                   autocomplete="off" class="layui-input">
               </div>
           </div>
@@ -59,7 +68,7 @@
                   <span class="x-red">*</span>法人
               </label>
               <div class="layui-input-inline">
-                  <input type="text" id="name" name="name" required="" value="" lay-verify="name"
+                  <input type="text" id="name" name="name" required="" lay-verify="name"
                   autocomplete="off" class="layui-input">
               </div>
           </div>
@@ -98,11 +107,14 @@
               <label for="L_repass" class="layui-form-label">
               </label>
               <button  class="layui-btn" lay-filter="add" lay-submit="">
-                  增加
+                  修改
               </button>
           </div>
       </form>
     </div>
+    <script>
+
+    </script>
     <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
     <script src="https://cdn.bootcss.com/jquery/3.2.1/jquery.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
     <script src="https://cdn.bootcss.com/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
@@ -115,6 +127,8 @@
       clientId: 'bbc5579a30dcf285fdcc', // 应用 ClientID，可在管理后台设置模块找到
       tableId: '34562', // 数据表 ID
     }
+    var recordId = $("body").find('#id').val();
+    console.log(recordId);
 
 
     var client = axios.create({
@@ -125,17 +139,14 @@
     var addRecord = function (data) {
       console.log('do string:')
       data=data.field
-      data.image=null;
-      data.status=0;
       console.log(data)
-      return client.post(`table/${config.tableId}/record/`, data)
+      return client.post(`table/${config.tableId}/record/recordId`, data)
     }
 
 
       layui.use(['form','layer'], function(){
           $ = layui.jquery;
-        var form = layui.form
-        ,layer = layui.layer;
+        var form = layui.form,layer = layui.layer;
       
         //自定义验证规则
         form.verify({
@@ -168,7 +179,7 @@
                 console.log(err)
               })
           // window.history.back(-1);
-          layer.alert("增加成功", {icon: 6},function () {
+          layer.alert("修改成功", {icon: 6},function () {
               // 获得frame索引
               var index = parent.layer.getFrameIndex(window.name);
               //关闭当前frame
