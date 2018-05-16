@@ -9,9 +9,9 @@
     <style media="screen">
       body {
         padding: 15px;
-      }
-
-      header {
+      } 
+ 
+      header { 
         margin-bottom: 30px;
       }
 
@@ -29,13 +29,13 @@
   <body>
     <header>
       <!-- <h1>知晓云部署运营后台示例</h1> -->
-      <h4>法人管理列表</h4>
+      <h4>子公司管理列表</h4>
     </header>
     <div class="content-body">
       <form class="form-inline query-bar">
         <label for="serch">搜索：</label>
-        <input type="text" class="form-control" id="s_name" placeholder="姓名">
-        <input type="text" class="form-control" id="s_phone" placeholder="手机号">
+        <input type="text" class="form-control" id="s_company" placeholder="公司名称">
+        <input type="text" class="form-control" id="s_name" placeholder="公司法人">
 <!-- 
         <label for="phoneNumber">联系方式</label>
         <input type="text" class="form-control" id="phoneNumber" placeholder="联系方式">
@@ -46,21 +46,23 @@
       <table class="table" style="font-size: 14px;">
         <thead class="thead-light">
           <tr>
-            <th >ID</th>
-            <th >姓名</th>
-            <th >手机</th>
-            <th >开户银行</th>
-            <th >银行账户</th>
-            <th >身份证</th>
-            <th >状态</th>
-            <th >操作</th>
+            <th width="10%">ID</th>
+            <th width="25%">公司名称</th>
+            <th width="10%">组织代码</th>
+            <th width="10%">法人</th>
+            <th width="10%">号码</th>
+            <th width="10%">地址</th>
+            <th width="10%">营业执照</th>
+            <th width="5%">状态</th>
+            <th width="10%">操作</th>
           </tr>
         </thead>
         <tbody id="table-body">
           <tr>
           <td>111111</td>
-          <td>湖州沸乐电</td>
+          <td>湖州沸乐电子商务有限公司</td>
           <td>222222</td>
+          <td>asda</td>
           <td>asda</td>
           <td>asdasdad</td>
           <td>asdada</td>
@@ -70,8 +72,17 @@
        
       </table>
     </div>
-    
-
+    <table id="tab">
+    </table>
+    <a href='javascript:first();'>First</a>
+    <a href='javascript:pre();'>Previous</a>
+    <a href='javascript:next();'>Next</a>
+    <a href='javascript:last();'>Last</a>
+    <span>(total page: </span>
+    <span id="total_num"></span>
+    <span> ,current page: </span>
+    <span id="current_index"></span>
+    <span>)</span>
 <!-- 
 <div class="container" style=" text-align: center; ">
 
@@ -87,7 +98,7 @@
       <div class="modal-dialog" role="document">
         <div class="modal-content">
           <div class="modal-header">
-            <h5 class="modal-title">管理</h5>
+            <h5 class="modal-title">地址信息管理</h5>
             <button type="button" class="close" data-dismiss="modal" aria-label="Close">
               <span aria-hidden="true">&times;</span>
             </button>
@@ -98,35 +109,34 @@
                 <label for="country">用户 ID</label>
                 <input type="text" class="form-control" id="id" name="id">
               </div> -->
-
               <div class="form-group">
-                <label for="country">*姓名</label>
-                <input type="text" class="form-control" id="name" name="name">
+                <label for="country">*公司名称</label>
+                <input type="text" class="form-control" id="company" name="company">
               </div>
               <div class="form-group">
-                <label for="province">*手机</label>
+                <label for="province">组织代码</label>
+                <input type="text" class="form-control" id="code" name="code">
+              </div>
+              <div class="form-group">
+                <label for="city">*法人</label>
+                <input type="text" class="form-control" id="name" name="name">
+              </div>
+
+              <div class="form-group">
+                <label for="district">号码</label>
                 <input type="text" class="form-control" id="phone" name="phone">
               </div>
               <div class="form-group">
-                <label for="city">开户银行</label>
-                <input type="text" class="form-control" id="bankname" name="bankname">
+                <label for="district">地址</label>
+                <input type="text" class="form-control" id="address" name="address">
               </div>
-
-              <div class="form-group">
-                <label for="district">银行账户</label>
-                <input type="text" class="form-control" id="banknum" name="banknum">
-              </div>
-              <div class="form-group">
-                <label for="district">身份证</label>
-                <input type="text" class="form-control" id="personnum" name="personnum">
-              </div>
-              <div class="form-group">
-                <label for="status">*状态</label>
+<!--               <div class="form-group">
+                <label for="status">状态</label>
                 <select class="form-control" id="status" name="status">
-                  <option value="1" selected="selected">启用</option>
-                  <option value="0">禁用</option>
+                  <option value="0">有效</option>
+                  <option value="1">过期</option>
                 </select>
-              </div>
+              </div> -->
             </form>
           </div>
           <div class="modal-footer">
@@ -146,9 +156,8 @@
     // 配置对象
     var config = {
       clientId: 'bbc5579a30dcf285fdcc', // 应用 ClientID，可在管理后台设置模块找到
-      tableId: '35240', // 数据表 ID
+      tableId: '34562', // 数据表 ID
     }
-
 
     var client = axios.create({
       baseURL: 'https://cloud.minapp.com/userve/v1/',// user dash api 的请求地址
@@ -174,11 +183,12 @@
         var d = data[i]
         tableHtml += `<tr>
           <td>${d.id}</td>
+          <td>${d.company}</td>
+          <td>${d.code}</td>
           <td>${d.name}</td>
           <td>${d.phone}</td>
-          <td>${d.bankname}</td>
-          <td>${d.banknum}</td>
-          <td>${d.personnum}</td>
+          <td>${d.address}</td>
+          <td>${d.image}</td>
           <td>${d.status}</td>
           <td><a href="#editModal" data-toggle="modal" onclick="fillForm('${d.id}')">编辑</a>&nbsp;&nbsp;
               <a href="javascript:;" onclick="deleteRecord('${d.id}')">删除</a></td>
@@ -225,8 +235,8 @@
     }
 
     var addRecord = function (data) {
-      //data.image="";
-      data.password="123456";
+      data.image="";
+      data.status=0;
       console.log(data)
       return client.post(`table/${config.tableId}/record/`, data)
     }
@@ -242,7 +252,6 @@
       for (var i = 0; i < eles.length; i++) {
         eles[i].value = editRecord[eles[i].name]
       }
-
     }
 
     // 清空编辑 modal
@@ -255,24 +264,24 @@
 
     // 查询数据
     var queryRecord = function () {
+      var company = document.querySelector('#s_company').value
       var name = document.querySelector('#s_name').value
-      var phone = document.querySelector('#s_phone').value
       var queryData = {} // 构造查询数据时要注意数据类型必须与知晓云后台设置的数据类型一致，如本 demo uid 必须为整型
-      if (name && !phone) {
+      if (company && !name) {
         queryData = {
-          "name": {"$contains": name}
+          "company": {"$contains": company}
         }
-      } else if (!name && phone) {
+      } else if (!company && name) {
         queryData = {
-          "phone": {"$eq": phone}
+          "name": {"$eq": name}
         }
-      } else if (phone && name) {
+      } else if (company && name) {
         queryData = {
           "$or": [
             {
-              "name": {"$contains": name}
+              "company": {"$contains": company}
             }, {
-              "phone": {"$eq": phone}
+              "name": {"$eq": name}
             }
           ]
         }
@@ -297,14 +306,6 @@
         })
       }
       // 区分编辑、新建状态调用不同接口。更新数据成功后重新拉取最新的数据列表
-      
-      if(data.status == '1'){
-        data.status = 1;
-      }else{
-        data.status =0;
-      }
-
-      console.log(data);
       if (isEdit) {
         updateRecord(recordId, data).then(function(res) {
           if (res.status === 200 ) {
@@ -330,11 +331,249 @@
       }
     }
 
-    getRecords() 
+   //getRecords() 
+
+
+         
 
     </script>
   </body>
 </html>
- <script>  
 
-    </script>  
+
+
+<script type="text/javascript">
+
+
+
+var json =[
+  {
+    "_id": "5aebcdeaef95120af36780b9",
+    "address": "永康",
+    "company": "永康市沸久电子商务有限公司",
+    "created_at": 1525403114,
+    "created_by": 62842748,
+    "id": "5aebcdeaef95120af36780b9",
+    "name": "郑梦江",
+    "phone": "15258944878",
+    "read_perm": [
+      "user:*"
+    ],
+    "status": 1,
+    "updated_at": 1525403114,
+    "write_perm": [
+      "user:*"
+    ]
+  },
+  {
+    "_id": "5aebcdeaef95120af36780ba",
+    "address": "永康",
+    "company": "永康市沸乐电子商务有限公司",
+    "created_at": 1525403114,
+    "created_by": 62842748,
+    "id": "5aebcdeaef95120af36780ba",
+    "name": "童丽红",
+    "phone": "15988572669",
+    "read_perm": [
+      "user:*"
+    ],
+    "status": 1,
+    "updated_at": 1525403114,
+    "write_perm": [
+      "user:*"
+    ]
+  },
+  {
+    "_id": "5aebcdeaef95120af36780bb",
+    "address": "永康",
+    "company": "永康市沸球电子商务有限公司",
+    "created_at": 1525403114,
+    "created_by": 62842748,
+    "id": "5aebcdeaef95120af36780bb",
+    "name": "成菊平",
+    "phone": "13738967662",
+    "read_perm": [
+      "user:*"
+    ],
+    "status": 1,
+    "updated_at": 1525403114,
+    "write_perm": [
+      "user:*"
+    ]
+  },
+  {
+    "_id": "5aebcdeaef95120af36780bc",
+    "address": "永康",
+    "company": "永康市沸中电子商务有限公司",
+    "created_at": 1525403114,
+    "created_by": 62842748,
+    "id": "5aebcdeaef95120af36780bc",
+    "name": "胡玉琴",
+    "phone": "15268688212",
+    "read_perm": [
+      "user:*"
+    ],
+    "status": 1,
+    "updated_at": 1525403114,
+    "write_perm": [
+      "user:*"
+    ]
+  },
+  {
+    "_id": "5aebcdeaef95120af36780bd",
+    "address": "永康",
+    "company": "永康市嘉诚软件开发有限公司",
+    "created_at": 1525403114,
+    "created_by": 62842748,
+    "id": "5aebcdeaef95120af36780bd",
+    "name": "童海浪",
+    "phone": "13738967662",
+    "read_perm": [
+      "user:*"
+    ],
+    "status": 1,
+    "updated_at": 1525403114,
+    "write_perm": [
+      "user:*"
+    ]
+  }
+];
+
+
+
+var tab = document.getElementById("tab");
+
+var currentPage = 1;
+
+var num = 22;
+
+var totalData = json.length;
+
+var totalPage = Math.ceil(totalData / num); // 计算需要的页数，逢小数进1
+
+// 显示下一页
+function next() {
+    if (show_last_page_alert())
+        return;
+    currentPage++;
+    show_current();
+}
+
+
+//显示前一页
+function pre() {
+    if (show_first_page_alert())
+        return;
+    currentPage--;
+    show_current();
+}
+
+//显示第一页
+function first() {
+    if (show_first_page_alert())
+        return;
+    currentPage = 1;
+    show_current();
+}
+
+//显示最后一页
+function last() {
+    if (show_last_page_alert())
+        return;
+    currentPage = totalPage;
+    show_current();
+}
+
+//计算并显示内容
+function show() {
+
+
+
+     var html = createRaw(json);
+        console.log(html);
+     document.querySelector('#table-body').innerHTML = html;
+}
+
+
+//创建要显示的html元素
+var createRaw = function(data) {
+//     var tr = document.createElement("tr");
+//     var td = document.createElement("td");
+//     tr.appendChild(td);
+//     td.innerHTML = s;
+//     tab.appendChild(tr);
+    var tableHtml = ''
+    var start = (currentPage - 1) * num;
+    var end = currentPage * num;
+    for ( var i = start; i < end; i++) {
+             var d = data[i]
+        if (i >= totalData)
+            return;
+  
+       tableHtml += `<tr>
+          <td>${d.id}</td>
+          <td>${d.company}</td>
+          <td>${d.code}</td>
+          <td>${d.name}</td>
+          <td>${d.phone}</td>
+          <td>${d.address}</td>
+          <td>${d.image}</td>
+          <td>${d.status}</td>
+          <td><a href="#editModal" data-toggle="modal" onclick="fillForm('${d.id}')">编辑</a>&nbsp;&nbsp;
+              <a href="javascript:;" onclick="deleteRecord('${d.id}')">删除</a></td>
+        </tr>`
+       
+       
+    }
+        return tableHtml
+}
+
+
+
+
+//重置显示的内容
+function reset() {
+    while (tab.hasChildNodes()) {
+        tab.removeChild(tab.lastChild);
+    }
+}
+
+//判断是否已经是第一页
+function show_first_page_alert() {
+    if (currentPage == 1) {
+        alert("Already the first page.");
+        return true;
+    }
+    return false;
+}
+
+//判断是否已经是最后一页
+function show_last_page_alert() {
+    if (currentPage == totalPage) {
+        alert("Already the last page.");
+        return true;
+    }
+    return false;
+}
+
+//在页面上显示总共有几页
+function show_total_page_num() {
+    document.getElementById("total_num").innerHTML = totalPage;
+}
+
+//显示当前页数
+function show_current_page_num() {
+    document.getElementById("current_index").innerHTML = currentPage;
+}
+
+//显示
+function show_current() {
+    reset();
+    show();
+    show_current_page_num();
+}
+
+//初始化
+show_current();
+show_total_page_num();
+</script>

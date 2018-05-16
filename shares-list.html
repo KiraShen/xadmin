@@ -29,29 +29,28 @@
   <body>
     <header>
       <!-- <h1>知晓云部署运营后台示例</h1> -->
-      <h4>法人管理列表</h4>
+      <h4>股票列表</h4>
     </header>
     <div class="content-body">
       <form class="form-inline query-bar">
         <label for="serch">搜索：</label>
-        <input type="text" class="form-control" id="s_name" placeholder="姓名">
-        <input type="text" class="form-control" id="s_phone" placeholder="手机号">
+        <input type="text" class="form-control" id="s_company" placeholder="公司名称">
+        <input type="text" class="form-control" id="s_name" placeholder="公司法人">
 <!-- 
         <label for="phoneNumber">联系方式</label>
         <input type="text" class="form-control" id="phoneNumber" placeholder="联系方式">
  -->
-        <button type="button" class="btn btn-secondary" onclick="queryRecord()">查询</button>
-        <button type="button" class="btn btn-primary ml-2" onclick="recordId = '';clearEditForm()" data-toggle="modal" data-target="#editModal">新建</button>
+        <button type="button" class="btn btn-primary" onclick="queryRecord()">查询</button>
+        <!-- <button type="button" class="btn btn-primary ml-2" onclick="recordId = '';clearEditForm()" data-toggle="modal" data-target="#editModal">新建</button> -->
       </form>
       <table class="table" style="font-size: 14px;">
         <thead class="thead-light">
           <tr>
             <th >ID</th>
-            <th >姓名</th>
-            <th >手机</th>
-            <th >开户银行</th>
-            <th >银行账户</th>
-            <th >身份证</th>
+            <th >UUID</th>
+            <th >公司名称</th>
+            <th >法人</th>
+            <th >数量</th>
             <th >状态</th>
             <th >操作</th>
           </tr>
@@ -59,18 +58,17 @@
         <tbody id="table-body">
           <tr>
           <td>111111</td>
-          <td>湖州沸乐电</td>
-          <td>222222</td>
-          <td>asda</td>
-          <td>asdasdad</td>
-          <td>asdada</td>
+          <td>111</td>
+          <td>xxx</td>
+          <td>x</td>
           <td>1</td>
-          <td><a href="#editModal" data-toggle="modal" onclick="fillForm('${d.id}')">编辑</a>&nbsp;&nbsp;<a href="javascript:;" onclick="deleteRecord('${d.id}')">删除</a></td>
+          <td>1</td>
+          <td><a href="#editModal" data-toggle="modal" onclick="fillForm('${d.id}')">编辑</a>&nbsp;&nbsp;
+          <a href="javascript:;" onclick="deleteRecord('${d.id}')">删除</a></td>
         </tr>
        
       </table>
     </div>
-    
 
 <!-- 
 <div class="container" style=" text-align: center; ">
@@ -98,30 +96,29 @@
                 <label for="country">用户 ID</label>
                 <input type="text" class="form-control" id="id" name="id">
               </div> -->
-
-              <div class="form-group">
-                <label for="country">*姓名</label>
-                <input type="text" class="form-control" id="name" name="name">
+<!--               <div class="form-group">
+                <label for="country">*公司名称</label>
+                <input type="text" class="form-control" id="company" name="company">
               </div>
               <div class="form-group">
-                <label for="province">*手机</label>
+                <label for="province">组织代码</label>
+                <input type="text" class="form-control" id="code" name="code">
+              </div>
+              <div class="form-group">
+                <label for="city">*法人</label>
+                <input type="text" class="form-control" id="name" name="name">
+              </div>
+
+              <div class="form-group">
+                <label for="district">号码</label>
                 <input type="text" class="form-control" id="phone" name="phone">
               </div>
               <div class="form-group">
-                <label for="city">开户银行</label>
-                <input type="text" class="form-control" id="bankname" name="bankname">
-              </div>
-
+                <label for="district">地址</label>
+                <input type="text" class="form-control" id="address" name="address">
+              </div> -->
               <div class="form-group">
-                <label for="district">银行账户</label>
-                <input type="text" class="form-control" id="banknum" name="banknum">
-              </div>
-              <div class="form-group">
-                <label for="district">身份证</label>
-                <input type="text" class="form-control" id="personnum" name="personnum">
-              </div>
-              <div class="form-group">
-                <label for="status">*状态</label>
+                <label for="status">状态</label>
                 <select class="form-control" id="status" name="status">
                   <option value="1" selected="selected">启用</option>
                   <option value="0">禁用</option>
@@ -146,9 +143,8 @@
     // 配置对象
     var config = {
       clientId: 'bbc5579a30dcf285fdcc', // 应用 ClientID，可在管理后台设置模块找到
-      tableId: '35240', // 数据表 ID
+      tableId: '36613', // 数据表 ID
     }
-
 
     var client = axios.create({
       baseURL: 'https://cloud.minapp.com/userve/v1/',// user dash api 的请求地址
@@ -174,11 +170,10 @@
         var d = data[i]
         tableHtml += `<tr>
           <td>${d.id}</td>
-          <td>${d.name}</td>
-          <td>${d.phone}</td>
-          <td>${d.bankname}</td>
-          <td>${d.banknum}</td>
-          <td>${d.personnum}</td>
+          <td>${d.UUID}</td>
+          <td>${d.company}</td>
+          <td>${d.person}</td>
+          <td>${d.amount}</td>
           <td>${d.status}</td>
           <td><a href="#editModal" data-toggle="modal" onclick="fillForm('${d.id}')">编辑</a>&nbsp;&nbsp;
               <a href="javascript:;" onclick="deleteRecord('${d.id}')">删除</a></td>
@@ -225,8 +220,6 @@
     }
 
     var addRecord = function (data) {
-      //data.image="";
-      data.password="123456";
       console.log(data)
       return client.post(`table/${config.tableId}/record/`, data)
     }
@@ -242,7 +235,6 @@
       for (var i = 0; i < eles.length; i++) {
         eles[i].value = editRecord[eles[i].name]
       }
-
     }
 
     // 清空编辑 modal
@@ -255,24 +247,24 @@
 
     // 查询数据
     var queryRecord = function () {
+      var company = document.querySelector('#s_company').value
       var name = document.querySelector('#s_name').value
-      var phone = document.querySelector('#s_phone').value
       var queryData = {} // 构造查询数据时要注意数据类型必须与知晓云后台设置的数据类型一致，如本 demo uid 必须为整型
-      if (name && !phone) {
+      if (company && !name) {
         queryData = {
-          "name": {"$contains": name}
+          "company": {"$contains": company}
         }
-      } else if (!name && phone) {
+      } else if (!company && name) {
         queryData = {
-          "phone": {"$eq": phone}
+          "name": {"$eq": name}
         }
-      } else if (phone && name) {
+      } else if (company && name) {
         queryData = {
           "$or": [
             {
-              "name": {"$contains": name}
+              "company": {"$contains": company}
             }, {
-              "phone": {"$eq": phone}
+              "name": {"$eq": name}
             }
           ]
         }
@@ -296,15 +288,12 @@
           [eles[i].name]: value
         })
       }
-      // 区分编辑、新建状态调用不同接口。更新数据成功后重新拉取最新的数据列表
-      
       if(data.status == '1'){
         data.status = 1;
       }else{
         data.status =0;
       }
-
-      console.log(data);
+      // 区分编辑、新建状态调用不同接口。更新数据成功后重新拉取最新的数据列表
       if (isEdit) {
         updateRecord(recordId, data).then(function(res) {
           if (res.status === 200 ) {
@@ -331,6 +320,7 @@
     }
 
     getRecords() 
+
 
     </script>
   </body>

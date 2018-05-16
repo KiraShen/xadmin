@@ -29,48 +29,42 @@
   <body>
     <header>
       <!-- <h1>知晓云部署运营后台示例</h1> -->
-      <h4>法人管理列表</h4>
+      <h4>股票分配</h4>
     </header>
     <div class="content-body">
       <form class="form-inline query-bar">
         <label for="serch">搜索：</label>
-        <input type="text" class="form-control" id="s_name" placeholder="姓名">
-        <input type="text" class="form-control" id="s_phone" placeholder="手机号">
+        <input type="text" class="form-control" id="s_company" placeholder="公司名称">
+        <input type="text" class="form-control" id="s_name" placeholder="公司法人">
 <!-- 
         <label for="phoneNumber">联系方式</label>
         <input type="text" class="form-control" id="phoneNumber" placeholder="联系方式">
  -->
-        <button type="button" class="btn btn-secondary" onclick="queryRecord()">查询</button>
-        <button type="button" class="btn btn-primary ml-2" onclick="recordId = '';clearEditForm()" data-toggle="modal" data-target="#editModal">新建</button>
+        <button type="button" class="btn btn-primary" onclick="queryRecord()">查询</button>
       </form>
       <table class="table" style="font-size: 14px;">
         <thead class="thead-light">
           <tr>
             <th >ID</th>
-            <th >姓名</th>
-            <th >手机</th>
-            <th >开户银行</th>
-            <th >银行账户</th>
-            <th >身份证</th>
-            <th >状态</th>
+            <th >公司名称</th>
+            <th >法人</th>
+            <th >号码</th>
             <th >操作</th>
           </tr>
         </thead>
         <tbody id="table-body">
           <tr>
           <td>111111</td>
-          <td>湖州沸乐电</td>
-          <td>222222</td>
-          <td>asda</td>
-          <td>asdasdad</td>
-          <td>asdada</td>
-          <td>1</td>
-          <td><a href="#editModal" data-toggle="modal" onclick="fillForm('${d.id}')">编辑</a>&nbsp;&nbsp;<a href="javascript:;" onclick="deleteRecord('${d.id}')">删除</a></td>
+          <td>湖州沸乐电子商务有限公司</td>
+          <td>某某</td>
+          <td>124578987</td>
+          <td>
+              <a href="javascript:;" onclick="recordId = '';renderEditForm('子公司','某某')" data-toggle="modal" data-target="#editModal">分配</a>
+          </td>
         </tr>
        
       </table>
     </div>
-    
 
 <!-- 
 <div class="container" style=" text-align: center; ">
@@ -95,36 +89,35 @@
           <div class="modal-body">
             <form id='editForm'>
               <!-- <div class="form-group">
-                <label for="country">用户 ID</label>
+                <label for="id">用户 ID</label>
                 <input type="text" class="form-control" id="id" name="id">
               </div> -->
+              <div class="form-group">
+                <label for="uuid">*股票UUID(系统生成)</label>
+                <input readonly="readonly" type="text" class="form-control" id="uuidin" name="uuid" >
+              </div>
+              
 
               <div class="form-group">
-                <label for="country">*姓名</label>
-                <input type="text" class="form-control" id="name" name="name">
+                <label for="country">*公司名称</label>
+                <input readonly="readonly" type="text" class="form-control" id="companyin" name="company" >
               </div>
+              
               <div class="form-group">
-                <label for="province">*手机</label>
-                <input type="text" class="form-control" id="phone" name="phone">
-              </div>
-              <div class="form-group">
-                <label for="city">开户银行</label>
-                <input type="text" class="form-control" id="bankname" name="bankname">
+                <label for="city">*法人</label>
+                <input readonly="readonly" type="text" class="form-control" id="namein" name="name">
               </div>
 
               <div class="form-group">
-                <label for="district">银行账户</label>
-                <input type="text" class="form-control" id="banknum" name="banknum">
+                <label for="amount">*请输入分配股数</label>
+                <input type="text" class="form-control" id="amountin" name="amount" onkeyup="this.value=this.value.replace(/[^0-9-]+/,'');">
               </div>
+
               <div class="form-group">
-                <label for="district">身份证</label>
-                <input type="text" class="form-control" id="personnum" name="personnum">
-              </div>
-              <div class="form-group">
-                <label for="status">*状态</label>
+                <label for="status">选择股票状态</label>
                 <select class="form-control" id="status" name="status">
-                  <option value="1" selected="selected">启用</option>
-                  <option value="0">禁用</option>
+                  <option value="1" selected="selected">有效</option>
+                  <option value="0">无效</option>
                 </select>
               </div>
             </form>
@@ -136,7 +129,9 @@
         </div>
       </div>
     </div>
+
     <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+    <script src="./js/md5.js"></script>  
     <script src="https://cdn.bootcss.com/jquery/3.2.1/jquery.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
     <script src="https://cdn.bootcss.com/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
     <script src="https://cdn.bootcss.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
@@ -146,9 +141,9 @@
     // 配置对象
     var config = {
       clientId: 'bbc5579a30dcf285fdcc', // 应用 ClientID，可在管理后台设置模块找到
-      tableId: '35240', // 数据表 ID
+      tableId: '34562',// 数据表 ID
+      sharesId:'36613'
     }
-
 
     var client = axios.create({
       baseURL: 'https://cloud.minapp.com/userve/v1/',// user dash api 的请求地址
@@ -174,14 +169,10 @@
         var d = data[i]
         tableHtml += `<tr>
           <td>${d.id}</td>
+          <td>${d.company}</td>
           <td>${d.name}</td>
           <td>${d.phone}</td>
-          <td>${d.bankname}</td>
-          <td>${d.banknum}</td>
-          <td>${d.personnum}</td>
-          <td>${d.status}</td>
-          <td><a href="#editModal" data-toggle="modal" onclick="fillForm('${d.id}')">编辑</a>&nbsp;&nbsp;
-              <a href="javascript:;" onclick="deleteRecord('${d.id}')">删除</a></td>
+          <td><a href="javascript:;" onclick="recordId = '';renderEditForm('${d.company}','${d.name}')" data-toggle="modal" data-target="#editModal">分配</a></td>
         </tr>`
       }
       return tableHtml
@@ -202,77 +193,40 @@
         var data = res.data.objects
         records = data
         var html = renderTable(data)
-        console.log(data);
+        //console.log(data);
         document.querySelector('#table-body').innerHTML = html
       })
     }
 
-    var deleteRecord = function (recordId) {
-      client.delete(`table/${config.tableId}/record/${recordId}/`).then(function(res) {
-        if (res.status === 204) {
-          getRecords()
-        } else {
-          throw Error(res)
-        }
-      }).catch(function(err) {
-        console.log(err)
-      })
-    }
-
-    var updateRecord = function (recordId, data) {
-      var _data = data || {}
-      return client.put(`table/${config.tableId}/record/${recordId}/`, _data)
-    }
 
     var addRecord = function (data) {
-      //data.image="";
-      data.password="123456";
+      data.amount = parseInt(data.amount)
       console.log(data)
-      return client.post(`table/${config.tableId}/record/`, data)
+      return client.post(`table/${config.sharesId}/record/`, data)
     }
 
-    // 将数据填充到编辑 modal
-    var fillForm = function (id) {
-      recordId = id // 将 id 赋值给 recordId，保存当前编辑数据的 id
-      var editRecord = records.find(function(r) {
-        return r.id == id
-      })
 
-      var eles = document.querySelector('#editForm').elements
-      for (var i = 0; i < eles.length; i++) {
-        eles[i].value = editRecord[eles[i].name]
-      }
-
-    }
-
-    // 清空编辑 modal
-    var clearEditForm = function () {
-      var eles = document.querySelector('#editForm').elements
-      for (var i = 0; i < eles.length; i++) {
-        eles[i].value = ''
-      }
-    }
 
     // 查询数据
     var queryRecord = function () {
+      var company = document.querySelector('#s_company').value
       var name = document.querySelector('#s_name').value
-      var phone = document.querySelector('#s_phone').value
       var queryData = {} // 构造查询数据时要注意数据类型必须与知晓云后台设置的数据类型一致，如本 demo uid 必须为整型
-      if (name && !phone) {
+      if (company && !name) {
         queryData = {
-          "name": {"$contains": name}
+          "company": {"$contains": company}
         }
-      } else if (!name && phone) {
+      } else if (!company && name) {
         queryData = {
-          "phone": {"$eq": phone}
+          "name": {"$eq": name}
         }
-      } else if (phone && name) {
+      } else if (company && name) {
         queryData = {
           "$or": [
             {
-              "name": {"$contains": name}
+              "company": {"$contains": company}
             }, {
-              "phone": {"$eq": phone}
+              "name": {"$eq": name}
             }
           ]
         }
@@ -280,6 +234,22 @@
       console.log(JSON.stringify(queryData));
       getRecords(0, JSON.stringify(queryData))
     }
+
+    // 生成编辑 modal
+    var renderEditForm = function (ain,bin) {
+      var uuidel = document.getElementById("uuidin")
+      var companyel = document.getElementById("companyin")
+      var nameel = document.getElementById("namein")
+      var amountel = document.getElementById("amountin")
+      companyel.value = ain
+      namein.value = bin
+      amountin.value=''
+      var tmp = Date.parse( new Date() ).toString()
+      tmp = md5(tmp.substr(0,10))
+      var n = Math.floor(Math.random()*10+1)
+      uuidel.value = tmp.substr(n,10)
+    }
+
 
     var submitModal = function () {
       var isEdit = !!recordId // 利用 recordId 判断编辑、新建状态
@@ -296,41 +266,29 @@
           [eles[i].name]: value
         })
       }
-      // 区分编辑、新建状态调用不同接口。更新数据成功后重新拉取最新的数据列表
-      
       if(data.status == '1'){
         data.status = 1;
       }else{
         data.status =0;
       }
-
-      console.log(data);
-      if (isEdit) {
-        updateRecord(recordId, data).then(function(res) {
-          if (res.status === 200 ) {
-            getRecords()
-            $('#editModal').modal('hide')
-          } else {
-            throw Error(res)
-          }
-        }).catch(function(err) {
-          console.log(err)
-        })
-      } else {
-        addRecord(data).then(function(res) {
-          if (res.status === 201 ) {
-            getRecords()
-            $('#editModal').modal('hide')
-          } else {
-            throw Error(res)
-          }
-        }).catch(function(err) {
-          console.log(err)
-        })
-      }
+              
+      addRecord(data).then(function(res) {
+        if (res.status === 201 ) {
+          getRecords()
+          $('#editModal').modal('hide')
+        } else {
+          throw Error(res)
+        }
+      }).catch(function(err) {
+        console.log(err)
+      })
+      
     }
 
     getRecords() 
+
+
+          
 
     </script>
   </body>
