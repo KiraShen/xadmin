@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <title> </title>
+        <meta name="renderer" content="webkit">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <meta name="viewport" content="width=device-width,user-scalable=yes, minimum-scale=0.4, initial-scale=0.8,target-densitydpi=low-dpi" />
+        <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
+        <link rel="stylesheet" href="./css/font.css">
+        <link rel="stylesheet" href="./css/xadmin.css">
+    </head>
+    <body>
+    
+    <div class="x-body">
+        
+        <fieldset class="layui-elem-field">
+            <legend>股权信息</legend>
+            <div class="layui-field-box">
+                <table class="layui-table">
+                    <tbody>
+                        <tr>
+                            <th width="20%">股权证唯一编码UUID</th>
+                            <td>1.0.180420</td></tr>
+                        <tr>
+                            <th width="20%">代理子公司</th>
+                            <td>x.xuebingsi.com</td></tr>
+                        <tr>
+                            <th width="20%">代理子公司法人</th>
+                            <td>WINNT</td></tr>
+                        <tr>
+                            <th width="20%">股权总股数</th>
+                            <td>9</td></tr>
+                        <tr>
+                            <th width="20%">登记日期</th>
+                            <td>5.6.27</td></tr>
+                        
+                    </tbody>
+                </table>
+            </div>
+
+            <legend>股权分配情况</legend>
+            <div class="layui-field-box">
+                <table class="layui-table">
+                    <tbody>
+                        <tr>
+                            <th width="20%">某某</th>
+                            <td>1.0.180420</td></tr>
+                        <tr>
+                            <th width="20%">某某2</th>
+                            <td>x.xuebingsi.com</td></tr>
+                        
+                    </tbody>
+                </table>
+            </div>
+        </fieldset>
+    </div>
+<script type="text/javascript">
+    function GetRequest() {
+    var url = location.search; //获取url中"?"符后的字串
+    var theRequest = new Object();
+    if (url.indexOf("?") != -1) {
+        var str = url.substr(1);
+        strs = str.split("&");
+        for (var i = 0; i < strs.length; i++) {
+            theRequest[strs[i].split("=")[0]] = decodeURIComponent(strs[i].split("=")[1]);
+        }
+    }
+    return theRequest;
+}
+
+var a=GetRequest();
+console.log(a['id']);
+
+
+
+</script>
+    </body>
+</html>

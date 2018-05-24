@@ -29,7 +29,7 @@
   <body>
     <header>
       <!-- <h1>知晓云部署运营后台示例</h1> -->
-      <h4>子公司管理列表</h4>
+      <h4>订单管理</h4>
       <a type="button" class="btn btn-success" style="line-height:1.6em;margin-top:3px;float:right" href="javascript:location.replace(location.href);" title="刷新">
         刷新</a>
     </header>
@@ -42,34 +42,27 @@
         <label for="phoneNumber">联系方式</label>
         <input type="text" class="form-control" id="phoneNumber" placeholder="联系方式">
  -->
-        <button type="button" class="btn btn-secondary" onclick="queryRecord()">查询</button>
-        <button type="button" class="btn btn-primary ml-2" onclick="recordId = '';clearEditForm()" data-toggle="modal" data-target="#editModal">新建</button>
+        <button type="button" class="btn btn-primary" onclick="queryRecord()">查询</button>
       </form>
       <table class="table" style="font-size: 14px;">
         <thead class="thead-light">
           <tr>
-            <th width="10%">ID</th>
-            <th width="25%">公司名称</th>
-            <th width="10%">组织代码</th>
-            <th width="10%">法人</th>
-            <th width="10%">号码</th>
-            <th width="10%">地址</th>
-            <th width="10%">营业执照</th>
-            <th width="5%">状态</th>
-            <th width="10%">操作</th>
+            <th >ID</th>
+            <th >公司名称</th>
+            <th >法人</th>
+            <th >号码</th>
+            <th >操作</th>
           </tr>
         </thead>
         <tbody id="table-body">
           <tr>
           <td>111111</td>
           <td>湖州沸乐电子商务有限公司</td>
-          <td>222222</td>
-          <td>asda</td>
-          <td>asda</td>
-          <td>asdasdad</td>
-          <td>asdada</td>
-          <td>1</td>
-          <td><a href="#editModal" data-toggle="modal" onclick="fillForm('${d.id}')">编辑</a>&nbsp;&nbsp;<a href="javascript:;" onclick="deleteRecord('${d.id}')">删除</a></td>
+          <td>某某</td>
+          <td>124578987</td>
+          <td>
+              <a href="javascript:;" onclick="recordId = '';renderEditForm('子公司','某某')" data-toggle="modal" data-target="#editModal">记录</a>
+          </td>
         </tr>
        
       </table>
@@ -98,38 +91,42 @@
           <div class="modal-body">
             <form id='editForm'>
               <!-- <div class="form-group">
-                <label for="country">用户 ID</label>
+                <label for="id">用户 ID</label>
                 <input type="text" class="form-control" id="id" name="id">
               </div> -->
               <div class="form-group">
-                <label for="country">*公司名称</label>
-                <input type="text" class="form-control" id="company" name="company">
+                <label for="uuid">*订单UUID(系统生成)</label>
+                <input readonly="readonly" type="text" class="form-control" id="uuidin" name="uuid" >
               </div>
+              
+
               <div class="form-group">
-                <label for="province">组织代码</label>
-                <input type="text" class="form-control" id="code" name="code">
+                <label for="country">*公司名称</label>
+                <input readonly="readonly" type="text" class="form-control" id="companyin" name="company" >
               </div>
+              
               <div class="form-group">
                 <label for="city">*法人</label>
-                <input type="text" class="form-control" id="name" name="name">
+                <input readonly="readonly" type="text" class="form-control" id="namein" name="name">
               </div>
 
               <div class="form-group">
-                <label for="district">号码</label>
-                <input type="text" class="form-control" id="phone" name="phone">
+                <label for="sum">*请输入出资总金额</label>
+                <input type="text" class="form-control" id="amountin" name="sum" onkeyup="this.value=this.value.replace(/[^0-9-.]+/,'');">
+                
               </div>
+
               <div class="form-group">
-                <label for="district">地址</label>
-                <input type="text" class="form-control" id="address" name="address">
-              </div>
-              <div class="form-group">
-                <label for="status">状态</label>
+                <label for="status">选择记录状态</label>
                 <select class="form-control" id="status" name="status">
-                  <option value="1" selected="selected">启用</option>
-                  <option value="0">禁用</option>
+                  <option value="1" selected="selected">有效</option>
+                  <option value="0">无效</option>
                 </select>
               </div>
             </form>
+            <div class="form-group">
+              <button type="button" class="btn btn-success"  onclick='addIn()'>增加出资记录</button>
+              </div>
           </div>
           <div class="modal-footer">
             <button type="button" class="btn btn-primary" onclick="submitModal()">确定</button>
@@ -138,7 +135,9 @@
         </div>
       </div>
     </div>
+
     <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+    <script src="./js/md5.js"></script>  
     <script src="https://cdn.bootcss.com/jquery/3.2.1/jquery.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
     <script src="https://cdn.bootcss.com/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
     <script src="https://cdn.bootcss.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
@@ -148,7 +147,8 @@
     // 配置对象
     var config = {
       clientId: 'bbc5579a30dcf285fdcc', // 应用 ClientID，可在管理后台设置模块找到
-      tableId: '34562', // 数据表 ID
+      tableId: '34562',// 数据表 ID
+      sharesId:'37747'
     }
 
     var client = axios.create({
@@ -176,14 +176,9 @@
         tableHtml += `<tr>
           <td>${d.id}</td>
           <td>${d.company}</td>
-          <td>${d.code}</td>
           <td>${d.name}</td>
           <td>${d.phone}</td>
-          <td>${d.address}</td>
-          <td>${d.image}</td>
-          <td>${d.status}</td>
-          <td><a href="#editModal" data-toggle="modal" onclick="fillForm('${d.id}')">编辑</a>&nbsp;&nbsp;
-              <a href="javascript:;" onclick="deleteRecord('${d.id}')">删除</a></td>
+          <td><a href="javascript:;" onclick="recordId = '';renderEditForm('${d.company}','${d.name}')" data-toggle="modal" data-target="#editModal">分配</a></td>
         </tr>`
       }
       return tableHtml
@@ -204,54 +199,19 @@
         var data = res.data.objects
         records = data
         var html = renderTable(data)
-        console.log(data);
+        //console.log(data);
         document.querySelector('#table-body').innerHTML = html
       })
     }
 
-    var deleteRecord = function (recordId) {
-      client.delete(`table/${config.tableId}/record/${recordId}/`).then(function(res) {
-        if (res.status === 204) {
-          getRecords()
-        } else {
-          throw Error(res)
-        }
-      }).catch(function(err) {
-        console.log(err)
-      })
-    }
-
-    var updateRecord = function (recordId, data) {
-      var _data = data || {}
-      return client.put(`table/${config.tableId}/record/${recordId}/`, _data)
-    }
 
     var addRecord = function (data) {
-      data.image="";
+      data.sum = parseInt(data.sum)
       console.log(data)
-      return client.post(`table/${config.tableId}/record/`, data)
+      return client.post(`table/${config.sharesId}/record/`, data)
     }
 
-    // 将数据填充到编辑 modal
-    var fillForm = function (id) {
-      recordId = id // 将 id 赋值给 recordId，保存当前编辑数据的 id
-      var editRecord = records.find(function(r) {
-        return r.id == id
-      })
 
-      var eles = document.querySelector('#editForm').elements
-      for (var i = 0; i < eles.length; i++) {
-        eles[i].value = editRecord[eles[i].name]
-      }
-    }
-
-    // 清空编辑 modal
-    var clearEditForm = function () {
-      var eles = document.querySelector('#editForm').elements
-      for (var i = 0; i < eles.length; i++) {
-        eles[i].value = ''
-      }
-    }
 
     // 查询数据
     var queryRecord = function () {
@@ -281,15 +241,39 @@
       getRecords(0, JSON.stringify(queryData))
     }
 
+    // 生成编辑 modal
+    var renderEditForm = function (ain,bin) {
+      var uuidel = document.getElementById("uuidin")
+      var companyel = document.getElementById("companyin")
+      var nameel = document.getElementById("namein")
+      var amountel = document.getElementById("amountin")
+      companyel.value = ain
+      namein.value = bin
+      amountin.value=''
+      var tmp = Date.parse( new Date() ).toString()
+      tmp = md5(tmp.substr(0,10))
+      var n = Math.floor(Math.random()*10+1)
+      uuidel.value = tmp.substr(n,10).toUpperCase()
+    }
+
+
+
+
     var submitModal = function () {
       var isEdit = !!recordId // 利用 recordId 判断编辑、新建状态
       var data = {}
+      var allotname = new Array()
+      var allotname_len = 0
+      var allotamount = new Array()
+      var allotamount_len = 0
       var eles = document.querySelector('#editForm').elements
       for (var i = 0; i < eles.length; i++) {
         var value = ''
-        if (eles[i].name === 'user_id') {
-          value = parseInt(eles[i].value)
-        } else {
+        if (eles[i].name === 'contribute') {
+          allotname_len = allotname.push(eles[i].value)
+        } else if(eles[i].name === 'contributesum'){
+            allotamount_len = allotamount.push(parseInt(eles[i].value))
+        }else {
           value = eles[i].value
         }
         Object.assign(data, {
@@ -301,38 +285,49 @@
       }else{
         data.status =0;
       }
-      // 区分编辑、新建状态调用不同接口。更新数据成功后重新拉取最新的数据列表
-      if (isEdit) {
-        updateRecord(recordId, data).then(function(res) {
-          if (res.status === 200 ) {
-            getRecords()
-            $('#editModal').modal('hide')
-          } else {
-            throw Error(res)
-          }
-        }).catch(function(err) {
-          console.log(err)
-        })
-      } else {
-        addRecord(data).then(function(res) {
-          if (res.status === 201 ) {
-            getRecords()
-            $('#editModal').modal('hide')
-          } else {
-            throw Error(res)
-          }
-        }).catch(function(err) {
-          console.log(err)
-        })
-      }
+
+      data['contribute']=(allotname)
+      data['contributesum']=(allotamount)
+      console.log(data)
+      
+      allotname=[]
+      allotamount=[]
+      addRecord(data).then(function(res) {
+        if (res.status === 201 ) {
+          getRecords()
+          $('#editModal').modal('hide')
+        } else {
+          throw Error(res)
+        }
+      }).catch(function(err) {
+        console.log(err)
+      })
+      
     }
 
     getRecords() 
 
-
-          
-
     </script>
+      <script>
+ 
+            
+            let input_num=0;
+            function addIn() {
+                input_num++;
+                let html = "<div class='form-group'>\
+                     <input type='text' placeholder='出资记录人' class='' name='contribute'/> \
+                    <input type='text' placeholder='出资数' class=''  name='contributesum' \
+                     <div class='button-group'><button class='btn ' onclick='del(this)'>删除此组</button>\
+                </div>";
+                $('#editForm').append(html);
+            }
+ 
+            function del(el) {
+                $(el).parent().remove();
+            }
+ 
+ 
+        </script>
   </body>
 </html>
  <script>  

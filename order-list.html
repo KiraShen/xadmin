@@ -1,200 +1,334 @@
 <!DOCTYPE html>
 <html>
-  
   <head>
-    <meta charset="UTF-8">
-    <title>欢迎页面-X-admin2.0</title>
-    <meta name="renderer" content="webkit">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-    <meta name="viewport" content="width=device-width,user-scalable=yes, minimum-scale=0.4, initial-scale=0.8,target-densitydpi=low-dpi" />
-    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
-    <link rel="stylesheet" href="./css/font.css">
-    <link rel="stylesheet" href="./css/xadmin.css">
-    <script type="text/javascript" src="https://cdn.bootcss.com/jquery/3.2.1/jquery.min.js"></script>
-    <script type="text/javascript" src="./lib/layui/layui.js" charset="utf-8"></script>
-    <script type="text/javascript" src="./js/xadmin.js"></script>
-    <!-- 让IE8/9支持媒体查询，从而兼容栅格 -->
-    <!--[if lt IE 9]>
-      <script src="https://cdn.staticfile.org/html5shiv/r29/html5.min.js"></script>
-      <script src="https://cdn.staticfile.org/respond.js/1.4.2/respond.min.js"></script>
-    <![endif]-->
+    <meta charset="utf-8">
+    <title>示例</title>
+    <link rel="stylesheet" href="https://cdn.bootcss.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+
+
+    <style media="screen">
+      body {
+        padding: 15px;
+      }
+
+      header {
+        margin-bottom: 30px;
+      }
+
+      .query-bar {
+        margin-bottom: 20px;
+      }
+
+      .query-bar label, .query-bar input {
+        margin-right: 8px;
+      }
+    </style>
+    <!-- 其中 client_id 需替换为您应用的 ClientID -->
+    <script src="https://cloud.minapp.com/custom-userdash/auth/bbc5579a30dcf285fdcc/"></script>
   </head>
-  
   <body>
-    <div class="x-nav">
-      <span class="layui-breadcrumb">
-        <a href="">首页</a>
-        <a href="">演示</a>
-        <a>
-          <cite>导航元素</cite></a>
-      </span>
-      <a class="layui-btn layui-btn-small" style="line-height:1.6em;margin-top:3px;float:right" href="javascript:location.replace(location.href);" title="刷新">
-        <i class="layui-icon" style="line-height:30px">ဂ</i></a>
-    </div>
-    <div class="x-body">
-      <div class="layui-row">
-        <form class="layui-form layui-col-md12 x-so">
-          <input class="layui-input" placeholder="开始日" name="start" id="start">
-          <input class="layui-input" placeholder="截止日" name="end" id="end">
-          <div class="layui-input-inline">
-            <select name="contrller">
-              <option>支付状态</option>
-              <option>已支付</option>
-              <option>未支付</option>
-            </select>
-          </div>
-          <div class="layui-input-inline">
-            <select name="contrller">
-              <option>支付方式</option>
-              <option>支付宝</option>
-              <option>微信</option>
-              <option>货到付款</option>
-            </select>
-          </div>
-          <div class="layui-input-inline">
-            <select name="contrller">
-              <option value="">订单状态</option>
-              <option value="0">待确认</option>
-              <option value="1">已确认</option>
-              <option value="2">已收货</option>
-              <option value="3">已取消</option>
-              <option value="4">已完成</option>
-              <option value="5">已作废</option>
-            </select>
-          </div>
-          <input type="text" name="username"  placeholder="请输入订单号" autocomplete="off" class="layui-input">
-          <button class="layui-btn"  lay-submit="" lay-filter="sreach"><i class="layui-icon">&#xe615;</i></button>
-        </form>
-      </div>
-      <xblock>
-        <button class="layui-btn layui-btn-danger" onclick="delAll()"><i class="layui-icon"></i>批量删除</button>
-        <button class="layui-btn" onclick="x_admin_show('添加用户','./order-add.html')"><i class="layui-icon"></i>添加</button>
-        <span class="x-right" style="line-height:40px">共有数据：88 条</span>
-      </xblock>
-      <table class="layui-table">
-        <thead>
+    <header>
+      <!-- <h1>知晓云部署运营后台示例</h1> -->
+      <h4>股票列表</h4>
+      <a type="button" class="btn btn-success" style="line-height:1.6em;margin-top:3px;float:right" href="javascript:location.replace(location.href);" title="刷新">
+        刷新</a>
+    </header>
+    <div class="content-body">
+      <form class="form-inline query-bar">
+        <label for="serch">搜索：</label>
+        <input type="text" class="form-control" id="s_company" placeholder="公司名称">
+        <input type="text" class="form-control" id="s_name" placeholder="公司法人">
+<!-- 
+        <label for="phoneNumber">联系方式</label>
+        <input type="text" class="form-control" id="phoneNumber" placeholder="联系方式">
+ -->
+        <button type="button" class="btn btn-primary" onclick="queryRecord()">查询</button>
+        <!-- <button type="button" class="btn btn-primary ml-2" onclick="recordId = '';clearEditForm()" data-toggle="modal" data-target="#editModal">新建</button> -->
+      </form>
+      <table class="table" style="font-size: 14px;">
+        <thead class="thead-light">
           <tr>
-            <th>
-              <div class="layui-unselect header layui-form-checkbox" lay-skin="primary"><i class="layui-icon">&#xe605;</i></div>
-            </th>
-            <th>订单编号</th>
-            <th>收货人</th>
-            <th>总金额</th>
-            <th>应付金额</th>
-            <th>订单状态</th>
-            <th>支付状态</th>
-            <th>发货状态</th>
-            <th>支付方式</th>
-            <th>配送方式</th>
-            <th>下单时间</th>
+            <th >ID</th>
+            <th >UUID</th>
+            <th >公司名称</th>
+            <th >法人</th>
+            <th >金额</th>
+            <th >状态</th>
             <th >操作</th>
-            </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td>
-              <div class="layui-unselect layui-form-checkbox" lay-skin="primary" data-id='2'><i class="layui-icon">&#xe605;</i></div>
-            </td>
-            <td>2017009171822298053</td>
-            <td>老王:18925139194</td>
-            <td>7829.10</td>
-            <td>7854.10</td>
-            <td>待确认</td>
-            <td>未支付</td>
-            <td>未发货</td>
-            <td>其他方式</td>
-            <td>申通物流</td>
-            <td>2017-08-17 18:22</td>
-            <td class="td-manage">
-              <a title="查看"  onclick="x_admin_show('编辑','order-view.html')" href="javascript:;">
-                <i class="layui-icon">&#xe63c;</i>
-              </a>
-              <a title="删除" onclick="member_del(this,'要删除的id')" href="javascript:;">
-                <i class="layui-icon">&#xe640;</i>
-              </a>
-            </td>
           </tr>
-        </tbody>
+        </thead>
+        <tbody id="table-body">
+          <tr>
+          <td>111111</td>
+          <td>111</td>
+          <td>xxx</td>
+          <td>x</td>
+          <td>100</td>
+          <td>1</td>
+          
+          <td><a href="showdata.html?id="+123 >查看</a>&nbsp;&nbsp;
+          <a href="#editModal" data-toggle="modal" onclick="fillForm('${d.id}')">编辑</a>&nbsp;&nbsp;
+          <a href="javascript:;" onclick="deleteRecord('${d.id}')">删除</a></td>
+        </tr>
+       
       </table>
-      <div class="page">
-        <div>
-          <a class="prev" href="">&lt;&lt;</a>
-          <a class="num" href="">1</a>
-          <span class="current">2</span>
-          <a class="num" href="">3</a>
-          <a class="num" href="">489</a>
-          <a class="next" href="">&gt;&gt;</a>
+    </div>
+
+<!-- 
+<div class="container" style=" text-align: center; ">
+
+    <span id="spanFirst" class="page-item">第一页</span>
+    <span  id="spanPre" class="page-item">上一页</span>
+    <span id="spanNext" class="page-item">下一页</span>
+    <span id="spanLast" class="page-item">最后一页</span>第  
+    <span id="spanPageNum"></span>页/共  
+    <span id="spanTotalPage"></span>页  
+</div> -->
+
+    <div class="modal" tabindex="-1" role="dialog" id="editModal">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title">管理</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            <form id='editForm'>
+              <!-- <div class="form-group">
+                <label for="country">用户 ID</label>
+                <input type="text" class="form-control" id="id" name="id">
+              </div> -->
+<!--               <div class="form-group">
+                <label for="country">*公司名称</label>
+                <input type="text" class="form-control" id="company" name="company">
+              </div>
+              <div class="form-group">
+                <label for="province">组织代码</label>
+                <input type="text" class="form-control" id="code" name="code">
+              </div>
+              <div class="form-group">
+                <label for="city">*法人</label>
+                <input type="text" class="form-control" id="name" name="name">
+              </div>
+
+              <div class="form-group">
+                <label for="district">号码</label>
+                <input type="text" class="form-control" id="phone" name="phone">
+              </div>
+              <div class="form-group">
+                <label for="district">地址</label>
+                <input type="text" class="form-control" id="address" name="address">
+              </div> -->
+              <div class="form-group">
+                <label for="status">状态</label>
+                <select class="form-control" id="status" name="status">
+                  <option value="1" selected="selected">启用</option>
+                  <option value="0">禁用</option>
+                </select>
+              </div>
+            </form>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-primary" onclick="submitModal()">确定</button>
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">取消</button>
+          </div>
         </div>
       </div>
-
     </div>
-    <script>
-      layui.use('laydate', function(){
-        var laydate = layui.laydate;
-        
-        //执行一个laydate实例
-        laydate.render({
-          elem: '#start' //指定元素
-        });
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+    <script src="https://cdn.bootcss.com/jquery/3.2.1/jquery.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+    <script src="https://cdn.bootcss.com/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+    <script src="https://cdn.bootcss.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
 
-        //执行一个laydate实例
-        laydate.render({
-          elem: '#end' //指定元素
-        });
-      });
+    <script type="text/javascript">
 
-       /*用户-停用*/
-      function member_stop(obj,id){
-          layer.confirm('确认要停用吗？',function(index){
+    // 配置对象
+    var config = {
+      clientId: 'bbc5579a30dcf285fdcc', // 应用 ClientID，可在管理后台设置模块找到
+      tableId: '37747', // 数据表 ID
+    }
 
-              if($(obj).attr('title')=='启用'){
+    var client = axios.create({
+      baseURL: 'https://cloud.minapp.com/userve/v1/',// user dash api 的请求地址
+      withCredentials: true // 必须手动开启为 true，允许跨域请求发送身份凭证信息
+    })
 
-                //发异步把用户状态进行更改
-                $(obj).attr('title','停用')
-                $(obj).find('i').html('&#xe62f;');
+    var records = []
+    var recordId = ''
 
-                $(obj).parents("tr").find(".td-status").find('span').addClass('layui-btn-disabled').html('已停用');
-                layer.msg('已停用!',{icon: 5,time:1000});
+    var statusMap = {
+      '0': '有效',
+      '1': '过期'
+    }
 
-              }else{
-                $(obj).attr('title','启用')
-                $(obj).find('i').html('&#xe601;');
+    var formatDate = function (timestamp) {
+      return new Date(timestamp * 1000).toLocaleDateString().replace(/\//g, '-')
+    }
 
-                $(obj).parents("tr").find(".td-status").find('span').removeClass('layui-btn-disabled').html('已启用');
-                layer.msg('已启用!',{icon: 5,time:1000});
-              }
-              
-          });
+    // 渲染数据表格
+    var renderTable = function (data) {
+      var tableHtml = ''
+      for (var i = 0; i < data.length; i++) {
+        var d = data[i]
+        tableHtml += `<tr>
+          <td>${d.id}</td>
+          <td>${d.uuid}</td>
+          <td>${d.company}</td>
+          <td>${d.name}</td>
+          <td>${d.sum}</td>
+          <td>${d.status}</td>
+          <td><a href="#editModal" data-toggle="modal" onclick="fillForm('${d.id}')">编辑</a>&nbsp;&nbsp;
+              <a href="javascript:;" onclick="showRecord('${d.id}')">查看</a></td>
+        </tr>`
       }
+      return tableHtml
+    }
 
-      /*用户-删除*/
-      function member_del(obj,id){
-          layer.confirm('确认要删除吗？',function(index){
-              //发异步删除数据
-              $(obj).parents("tr").remove();
-              layer.msg('已删除!',{icon:1,time:1000});
-          });
+
+    var getRecords = function (offset, where) {
+      var _offset = offset || 0
+      var _where = where || {}
+      client.get(`table/${config.tableId}/record/`, {
+        params: {
+          order_by: '-updated_at',
+          limit: 500,
+          offset: _offset,
+          where: _where
+        }
+      }).then(function(res) {
+        var data = res.data.objects
+        records = data
+        var html = renderTable(data)
+        console.log(data);
+        document.querySelector('#table-body').innerHTML = html
+      })
+    }
+
+    var deleteRecord = function (recordId) {
+      client.delete(`table/${config.tableId}/record/${recordId}/`).then(function(res) {
+        if (res.status === 204) {
+          getRecords()
+        } else {
+          throw Error(res)
+        }
+      }).catch(function(err) {
+        console.log(err)
+      })
+    }
+
+    var updateRecord = function (recordId, data) {
+      var _data = data || {}
+      return client.put(`table/${config.tableId}/record/${recordId}/`, _data)
+    }
+
+    var addRecord = function (data) {
+      console.log(data)
+      return client.post(`table/${config.tableId}/record/`, data)
+    }
+
+    // 将数据填充到编辑 modal
+    var fillForm = function (id) {
+      recordId = id // 将 id 赋值给 recordId，保存当前编辑数据的 id
+      var editRecord = records.find(function(r) {
+        return r.id == id
+      })
+
+      var eles = document.querySelector('#editForm').elements
+      for (var i = 0; i < eles.length; i++) {
+        eles[i].value = editRecord[eles[i].name]
       }
+    }
 
-
-
-      function delAll (argument) {
-
-        var data = tableCheck.getData();
-  
-        layer.confirm('确认要删除吗？'+data,function(index){
-            //捉到所有被选中的，发异步进行删除
-            layer.msg('删除成功', {icon: 1});
-            $(".layui-form-checked").not('.header').parents('tr').remove();
-        });
+    // 清空编辑 modal
+    var clearEditForm = function () {
+      var eles = document.querySelector('#editForm').elements
+      for (var i = 0; i < eles.length; i++) {
+        eles[i].value = ''
       }
+    }
+
+    // 查询数据
+    var queryRecord = function () {
+      var company = document.querySelector('#s_company').value
+      var name = document.querySelector('#s_name').value
+      var queryData = {} // 构造查询数据时要注意数据类型必须与知晓云后台设置的数据类型一致，如本 demo uid 必须为整型
+      if (company && !name) {
+        queryData = {
+          "company": {"$contains": company}
+        }
+      } else if (!company && name) {
+        queryData = {
+          "name": {"$eq": name}
+        }
+      } else if (company && name) {
+        queryData = {
+          "$or": [
+            {
+              "company": {"$contains": company}
+            }, {
+              "name": {"$eq": name}
+            }
+          ]
+        }
+      }
+      console.log(JSON.stringify(queryData));
+      getRecords(0, JSON.stringify(queryData))
+    }
+
+    var submitModal = function () {
+      var isEdit = !!recordId // 利用 recordId 判断编辑、新建状态
+      var data = {}
+      var eles = document.querySelector('#editForm').elements
+      for (var i = 0; i < eles.length; i++) {
+        var value = ''
+        if (eles[i].name === 'user_id') {
+          value = parseInt(eles[i].value)
+        } else {
+          value = eles[i].value
+        }
+        Object.assign(data, {
+          [eles[i].name]: value
+        })
+      }
+      if(data.status == '1'){
+        data.status = 1;
+      }else{
+        data.status =0;
+      }
+      // 区分编辑、新建状态调用不同接口。更新数据成功后重新拉取最新的数据列表
+      if (isEdit) {
+        updateRecord(recordId, data).then(function(res) {
+          if (res.status === 200 ) {
+            getRecords()
+            $('#editModal').modal('hide')
+          } else {
+            throw Error(res)
+          }
+        }).catch(function(err) {
+          console.log(err)
+        })
+      } else {
+        addRecord(data).then(function(res) {
+          if (res.status === 201 ) {
+            getRecords()
+            $('#editModal').modal('hide')
+          } else {
+            throw Error(res)
+          }
+        }).catch(function(err) {
+          console.log(err)
+        })
+      }
+    }
+
+    getRecords() 
+
+
     </script>
-    <script>var _hmt = _hmt || []; (function() {
-        var hm = document.createElement("script");
-        hm.src = "https://hm.baidu.com/hm.js?b393d153aeb26b46e9431fabaf0f6190";
-        var s = document.getElementsByTagName("script")[0];
-        s.parentNode.insertBefore(hm, s);
-      })();</script>
   </body>
-
 </html>
+ <script>  
+
+    </script>  

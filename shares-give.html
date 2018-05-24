@@ -30,6 +30,8 @@
     <header>
       <!-- <h1>知晓云部署运营后台示例</h1> -->
       <h4>股票分配</h4>
+      <a type="button" class="btn btn-success" style="line-height:1.6em;margin-top:3px;float:right" href="javascript:location.replace(location.href);" title="刷新">
+        刷新</a>
     </header>
     <div class="content-body">
       <form class="form-inline query-bar">
@@ -120,7 +122,11 @@
                   <option value="0">无效</option>
                 </select>
               </div>
+             
             </form>
+             <div class="form-group">
+              <button type="button" class="btn btn-success"  onclick='addIn()'>增加股权分配</button>
+              </div>
           </div>
           <div class="modal-footer">
             <button type="button" class="btn btn-primary" onclick="submitModal()">确定</button>
@@ -254,12 +260,18 @@
     var submitModal = function () {
       var isEdit = !!recordId // 利用 recordId 判断编辑、新建状态
       var data = {}
+      var allotname = new Array()
+      var allotname_len = 0
+      var allotamount = new Array()
+      var allotamount_len = 0
       var eles = document.querySelector('#editForm').elements
       for (var i = 0; i < eles.length; i++) {
         var value = ''
-        if (eles[i].name === 'user_id') {
-          value = parseInt(eles[i].value)
-        } else {
+        if (eles[i].name === 'allotname') {
+          allotname_len = allotname.push(eles[i].value)
+        } else if(eles[i].name === 'allotamount'){
+            allotamount_len = allotamount.push(parseInt(eles[i].value))
+        }else {
           value = eles[i].value
         }
         Object.assign(data, {
@@ -271,7 +283,13 @@
       }else{
         data.status =0;
       }
-              
+
+      data['allotname']=(allotname)
+      data['allotamount']=(allotamount)
+      console.log(data)
+      
+      allotname=[]
+      allotamount=[]
       addRecord(data).then(function(res) {
         if (res.status === 201 ) {
           getRecords()
@@ -287,10 +305,32 @@
 
     getRecords() 
 
-
+                
+      
           
 
     </script>
+
+        <script>
+ 
+            
+            let input_num=0;
+            function addIn() {
+                input_num++;
+                let html = "<div class='form-group'>\
+                     <input type='text' placeholder='股权分配人' class='' name='allotname'/> \
+                    <input type='text' placeholder='分配数' class=''  name='allotamount' \
+                     <div class='button-group'><button class='btn ' onclick='del(this)'>删除此组</button>\
+                </div>";
+                $('#editForm').append(html);
+            }
+ 
+            function del(el) {
+                $(el).parent().remove();
+            }
+ 
+ 
+        </script>
   </body>
 </html>
  <script>  

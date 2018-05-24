@@ -30,6 +30,8 @@
     <header>
       <!-- <h1>知晓云部署运营后台示例</h1> -->
       <h4>股票列表</h4>
+      <a type="button" class="btn btn-success" style="line-height:1.6em;margin-top:3px;float:right" href="javascript:location.replace(location.href);" title="刷新">
+        刷新</a>
     </header>
     <div class="content-body">
       <form class="form-inline query-bar">
@@ -51,7 +53,7 @@
             <th >公司名称</th>
             <th >法人</th>
             <th >数量</th>
-            <th >状态</th>
+            <th>状态</th>
             <th >操作</th>
           </tr>
         </thead>
@@ -63,7 +65,8 @@
           <td>x</td>
           <td>1</td>
           <td>1</td>
-          <td><a href="#editModal" data-toggle="modal" onclick="fillForm('${d.id}')">编辑</a>&nbsp;&nbsp;
+          <td><a href="#editModal" data-toggle="modal" onclick="fillForm('${d.id}')">查看</a>&nbsp;&nbsp;
+          <a href="#editModal" data-toggle="modal" onclick="fillForm('${d.id}')">编辑</a>&nbsp;&nbsp;
           <a href="javascript:;" onclick="deleteRecord('${d.id}')">删除</a></td>
         </tr>
        
@@ -176,7 +179,7 @@
           <td>${d.amount}</td>
           <td>${d.status}</td>
           <td><a href="#editModal" data-toggle="modal" onclick="fillForm('${d.id}')">编辑</a>&nbsp;&nbsp;
-              <a href="javascript:;" onclick="deleteRecord('${d.id}')">删除</a></td>
+              <a href="javascript:;" onclick="showRecord('${d.id}')">查看</a></td>
         </tr>`
       }
       return tableHtml
