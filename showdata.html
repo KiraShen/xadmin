@@ -13,27 +13,29 @@
     <body>
     
     <div class="x-body">
-        
+        <button class="layui-btn layui-btn-danger" onclick="javascript :history.back(-1);"></i>返回上一页</button>
+
+        <button class="layui-btn layui-btn-success" onclick="javascript :history.back(-1);"></i>生成WORD文档</button>
         <fieldset class="layui-elem-field">
             <legend>股权信息</legend>
             <div class="layui-field-box">
                 <table class="layui-table">
-                    <tbody>
+                    <tbody id="table-info">
                         <tr>
                             <th width="20%">股权证唯一编码UUID</th>
-                            <td>1.0.180420</td></tr>
+                            <td>${data.uuid}</td></tr>
                         <tr>
                             <th width="20%">代理子公司</th>
-                            <td>x.xuebingsi.com</td></tr>
+                            <td>${data.company}</td></tr>
                         <tr>
                             <th width="20%">代理子公司法人</th>
-                            <td>WINNT</td></tr>
+                            <td>${data.name}</td></tr>
                         <tr>
                             <th width="20%">股权总股数</th>
-                            <td>9</td></tr>
+                            <td>${data.sum}</td></tr>
                         <tr>
                             <th width="20%">登记日期</th>
-                            <td>5.6.27</td></tr>
+                            <td>${data.created_at}</td></tr>
                         
                     </tbody>
                 </table>
@@ -42,19 +44,21 @@
             <legend>股权分配情况</legend>
             <div class="layui-field-box">
                 <table class="layui-table">
-                    <tbody>
+                    <tbody id="table-text">
                         <tr>
                             <th width="20%">某某</th>
-                            <td>1.0.180420</td></tr>
-                        <tr>
-                            <th width="20%">某某2</th>
-                            <td>x.xuebingsi.com</td></tr>
+                            <td>1000</td>
+                        </tr>
                         
                     </tbody>
                 </table>
             </div>
         </fieldset>
-    </div>
+    </div>    
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+    <script src="https://cdn.bootcss.com/jquery/3.2.1/jquery.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+    <script src="https://cdn.bootcss.com/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+    <script src="https://cdn.bootcss.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
 <script type="text/javascript">
     function GetRequest() {
     var url = location.search; //获取url中"?"符后的字串
@@ -69,8 +73,89 @@
     return theRequest;
 }
 
-var a=GetRequest();
-console.log(a['id']);
+// 配置对象
+    var config = {
+      clientId: 'bbc5579a30dcf285fdcc', // 应用 ClientID，可在管理后台设置模块找到
+      tableId: '37747', // 数据表 ID
+    }
+
+    var client = axios.create({
+      baseURL: 'https://cloud.minapp.com/userve/v1/',// user dash api 的请求地址
+      withCredentials: true // 必须手动开启为 true，允许跨域请求发送身份凭证信息
+    })
+
+    var getRecords = function (offset, where) {
+      var _offset = offset || 0
+      var _where = where || {}
+      client.get(`table/${config.tableId}/record/`, {
+        params: {
+          order_by: '-updated_at',
+          limit: 5,
+          offset: _offset,
+          where: _where
+        }
+      }).then(function(res) {
+        var data = res.data.objects
+        data = data[0]
+        console.log(data);
+        var html1 = renderInfo(data)
+        var html2 = renderText(data)
+        document.querySelector('#table-info').innerHTML = html1
+        document.querySelector('#table-text').innerHTML = html2
+      })
+    }
+
+// 渲染数据表格
+    var renderInfo = function (data) {
+      var tableHtml = ''
+      tableHtml +=`<tr>
+            <th width="20%">股权证唯一编码UUID</th>
+            <td>${data.uuid}</td></tr>
+        <tr>
+            <th width="20%">代理子公司</th>
+            <td>${data.company}</td></tr>
+        <tr>
+            <th width="20%">代理子公司法人</th>
+            <td>${data.name}</td></tr>
+        <tr>
+            <th width="20%">股权总股数</th>
+            <td>${data.sum}</td></tr>
+        <tr>
+            <th width="20%">登记日期</th>
+            <td>${data.created_at}</td>
+        </tr>`
+      return tableHtml
+    }
+
+    var renderText = function (data) {
+      var tableHtml = ''
+      
+      for (var i = 0; i < data.contribute.length; i++) {
+        var d = data.contribute
+        var b = data.contributesum
+        tableHtml +=`<tr>
+          <th width="20%">${d[i]}</th>
+          <td>${b[i]}</td>
+      </tr>`
+
+      }
+      return tableHtml
+    }
+
+
+// 查询数据
+
+      var id = GetRequest();
+      id=id['id']
+      var queryData = {} // 构造查询数据时要注意数据类型必须与知晓云后台设置的数据类型一致，如本 demo uid 必须为整型
+      if (id) {
+        queryData = {
+          "id": {"$eq": id}
+        }
+      }
+      console.log(JSON.stringify(queryData));
+      getRecords(0, JSON.stringify(queryData))
+      
 
 
 
